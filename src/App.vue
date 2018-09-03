@@ -1,22 +1,23 @@
 <template>
-  <div id="app">
+  <div class="app">
     <router-view/>
+    <footer-guide></footer-guide>
   </div>
 </template>
 
 <script>
+import FooterGuide from 'components/FooterGuide/FooterGuide'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    FooterGuide
+  }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="stylus" scoped>
+  .app
+    width 100%
+    height 100%
+    background #f5f5f5
 </style>
