@@ -4,7 +4,7 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-// import store from './store/index.js'
+import store from './store/index.js'
 import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
 import 'common/reset.css'
@@ -27,6 +27,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
