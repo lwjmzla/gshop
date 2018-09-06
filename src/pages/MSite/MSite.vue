@@ -9,27 +9,32 @@
         <span class="header_login_text">登录|注册</span>
       </span>
     </header-top>
-    <!--首页导航-->
-    <nav class="msite_nav">
-      <swiper :options="swiperOption" v-if="categorys.length" >
-        <swiper-slide v-for="(page,index) in categorys" :key="index">
-          <a href="javascript:" class="link_to_food" v-for="category in page" :key="category.id">
-            <div class="food_container">
-              <img :src="baseImageUrl + category.image_url">
-            </div>
-            <span>{{category.title}}</span>
-          </a>
-        </swiper-slide>
-        <div class="swiper-pagination"  slot="pagination"></div>
-      </swiper>
-    </nav>
-    <!--首页附近商家-->
-    <div class="msite_shop_list">
-      <div class="shop_header">
-        <i class="iconfont icon-xuanxiang"></i>
-        <span class="shop_header_title">附近商家</span>
+    <div class="betterScrollWrap">
+      <div class="betterScrollContent">
+        <!--首页导航-->
+        <nav class="msite_nav">
+          <img :src="load" v-if="!categorys.length" />
+          <swiper :options="swiperOption" v-if="categorys.length" >
+            <swiper-slide v-for="(page,index) in categorys" :key="index">
+              <a href="javascript:" class="link_to_food" v-for="category in page" :key="category.id">
+                <div class="food_container">
+                  <img :src="baseImageUrl + category.image_url">
+                </div>
+                <span>{{category.title}}</span>
+              </a>
+            </swiper-slide>
+            <div class="swiper-pagination"  slot="pagination"></div>
+          </swiper>
+        </nav>
+        <!--首页附近商家-->
+        <div class="msite_shop_list">
+          <div class="shop_header">
+            <i class="iconfont icon-xuanxiang"></i>
+            <span class="shop_header_title">附近商家</span>
+          </div>
+          <shop-list :shops="shops"></shop-list>
+        </div>
       </div>
-      <shop-list></shop-list>
     </div>
   </section>
 </template>
@@ -41,6 +46,7 @@ import HeaderTop from 'components/HeaderTop/HeaderTop'
 import ShopList from 'components/ShopList/ShopList'
 import {getAddress, getFoodCategorys, getShops, ERR_OK} from 'api/index'
 import {mapGetters} from 'vuex'
+import BScroll from 'better-scroll'
 export default {
   data () {
     return {
@@ -50,7 +56,9 @@ export default {
       },
       title: '',
       baseImageUrl: 'https://fuss10.elemecdn.com',
-      categorys: []
+      categorys: [],
+      shops: [],
+      load: require('./images/msite_back.svg')
     }
   },
   components: {
@@ -72,7 +80,16 @@ export default {
       }
     })
     getShops(this.latitude, this.longitude).then((res) => {
-      console.log(res)
+      if (res.code === ERR_OK) {
+        this.shops = res.data
+      }
+    })
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.scroll = new BScroll('.betterScrollWrap', {
+        click: true
+      })
     })
   },
   computed: {
@@ -89,6 +106,16 @@ export default {
       }
       return bigArr
     }
+  },
+  watch: {
+    shops (nevVal) {
+      // setTimeout(() => {
+      //   this.scroll.refresh()
+      // }, 100)
+      this.$nextTick(() => { // 如果不加这个的话，shops只是数据更新了，但是DOM还没渲染好，加了nextTick就是等DOM渲染好再执行
+        this.scroll.refresh()
+      })
+    }
   }
 }
 </script>
@@ -100,11 +127,17 @@ export default {
 
 <style lang="stylus" scoped>
   @import "~common/stylus/mixins.styl"
+  .betterScrollWrap
+    overflow hidden
+    position absolute
+    top 45px
+    bottom 50px
+    left 0
+    right 0
   .msite  //首页
     width 100%
     .msite_nav
       bottom-border-1px(#e4e4e4)
-      margin-top 45px
       height 200px
       background #fff
       .swiper-container
