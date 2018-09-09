@@ -38,7 +38,7 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                <img class="get_verification" :src="captchaSrc" alt="captcha" @click="getCaptcha">
               </section>
             </section>
           </div>
@@ -56,6 +56,7 @@
 
 <script>
 import AlertTip from 'components/AlertTip/AlertTip'
+import {BASE_URL, reqPwdLogin, reqSendCode, reqSmsLogin, ERR_OK} from 'api/index.js'
 export default {
   data () {
     return {
@@ -68,7 +69,9 @@ export default {
       name: '',
       captcha: '',
       alertText: '',
-      showAlert: false
+      showAlert: false,
+      BASE_URL,
+      timeStamp: 0
     }
   },
   components: {
@@ -77,6 +80,9 @@ export default {
   computed: {
     rightPhone () {
       return this.IsCorrectMobile(this.phone)
+    },
+    captchaSrc () {
+      return BASE_URL + '/captcha?time=' + this.timeStamp // 其实这里可以不反向代理
     }
   },
   methods: {
@@ -84,7 +90,7 @@ export default {
       var reg = new RegExp(/^(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[0-9]|19[0-9]|166)[0-9]{8}$/)
       return reg.test(mobile)
     },
-    getCode () {
+    async getCode () {
       if (!this.timer) {
         clearInterval(this.timer)
         this.timer = null
@@ -97,34 +103,63 @@ export default {
             this.timer = null
           }
         }, 1000)
+        const result = await reqSendCode(this.phone)
+        if (result.code === ERR_OK) {
+          this.alertText = '已发送短信，请查收'
+          this.showAlert = true
+        } else {
+          this.alertText = result.msg
+          this.showAlert = true
+
+          this.countTime = 0
+          clearInterval(this.timer)
+          this.timer = null
+        }
       }
     },
-    login () {
+    async login () {
+      let result
       if (this.loginWay) { // 短信登录
         if (!this.IsCorrectMobile(this.phone)) {
           this.alertText = '手机号不正确'
           this.showAlert = true
+          return false
         } else if (!/^\d{6}$/.test(this.code)) {
           this.alertText = '验证必须是6位数字'
           this.showAlert = true
+          return false
         }
         // ajax
+        result = await reqSmsLogin(this.phone, this.code)
       } else { // name登陆
         if (!this.name) {
           this.alertText = '用户名必须指定'
           this.showAlert = true
+          return false
         } else if (!this.pwd) {
           this.alertText = '密码必须指定'
           this.showAlert = true
+          return false
         } else if (!this.captcha) {
           this.alertText = '验证码必须指定'
           this.showAlert = true
+          return false
         }
         // ajax
+        result = await reqPwdLogin(this.name, this.pwd, this.captcha)
+      }
+      if (result.code === ERR_OK) {
+        const data = result.data
+      } else {
+        this.alertText = result.msg
+        this.showAlert = true
       }
     },
     closeTip () {
       this.showAlert = false
+    },
+    getCaptcha () {
+      this.timeStamp = new Date().getTime()
     }
   }
 }
