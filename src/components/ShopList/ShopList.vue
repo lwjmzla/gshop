@@ -6,7 +6,7 @@
       </li>
     </ul>
     <ul class="shop_list" v-if="shops.length">
-      <li class="shop_li border-1px" v-for="(shop,index) in shops" :key="shop.id">
+      <li class="shop_li border-1px" v-for="(shop,index) in shops" :key="shop.id" @click="$router.push('/shop')">
         <a>
           <div class="shop_left">
             <img class="shop_img" :src="calculateImg(index)">

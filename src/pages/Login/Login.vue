@@ -1,62 +1,65 @@
 <template>
-  <section class="loginContainer">
-    <div class="loginInner">
-      <div class="login_header">
-        <h2 class="login_logo">硅谷外卖</h2>
-        <div class="login_header_title">
-          <a href="javascript:;" :class="{on: loginWay}" @click="loginWay = true">短信登录</a>
-          <a href="javascript:;" :class="{on: !loginWay}" @click="loginWay = false">密码登录</a>
-        </div>
-      </div>
-      <div class="login_content">
-        <form>
-          <div :class="{on: loginWay}">
-            <section class="login_message">
-              <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
-              <button :disabled="!rightPhone" class="get_verification" :class="{right_phone: rightPhone}"
-              @click.prevent="getCode()">{{countTime > 0 ? `已发送${countTime}秒` : '获取验证码'}}</button>
-            </section>
-            <section class="login_verification">
-              <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
-            </section>
-            <section class="login_hint">
-              温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
-              <a href="javascript:;">《用户服务协议》</a>
-            </section>
+  <transition>
+    <section class="loginContainer">
+      <div class="loginInner">
+        <div class="login_header">
+          <h2 class="login_logo">硅谷外卖</h2>
+          <div class="login_header_title">
+            <a href="javascript:;" :class="{on: loginWay}" @click="loginWay = true">短信登录</a>
+            <a href="javascript:;" :class="{on: !loginWay}" @click="loginWay = false">密码登录</a>
           </div>
-          <div :class="{on: !loginWay}">
-            <section>
+        </div>
+        <div class="login_content">
+          <form>
+            <div :class="{on: loginWay}">
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name">
+                <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
+                <button :disabled="!rightPhone" class="get_verification" :class="{right_phone: rightPhone}"
+                @click.prevent="getCode()">{{countTime > 0 ? `已发送${countTime}秒` : '获取验证码'}}</button>
               </section>
               <section class="login_verification">
-                <input :type="showPwd ? 'text' : 'password'" maxlength="8" placeholder="密码" v-model="pwd">
-                <div class="switch_button" :class="showPwd ? 'on' : 'off'" @click="showPwd = !showPwd">
-                  <div class="switch_circle" :class="showPwd ? 'right' : ''"></div>
-                  <span class="switch_text">{{showPwd ? 'abc' : '...'}}</span>
-                </div>
+                <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
               </section>
-              <section class="login_message">
-                <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                <img class="get_verification" :src="captchaSrc" alt="captcha" @click="getCaptcha">
+              <section class="login_hint">
+                温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
+                <a href="javascript:;">《用户服务协议》</a>
               </section>
-            </section>
-          </div>
-          <button class="login_submit" @click.prevent="login">登录</button>
-        </form>
-        <a href="javascript:;" class="about_us">关于我们</a>
+            </div>
+            <div :class="{on: !loginWay}">
+              <section>
+                <section class="login_message">
+                  <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name">
+                </section>
+                <section class="login_verification">
+                  <input :type="showPwd ? 'text' : 'password'" maxlength="8" placeholder="密码" v-model="pwd">
+                  <div class="switch_button" :class="showPwd ? 'on' : 'off'" @click="showPwd = !showPwd">
+                    <div class="switch_circle" :class="showPwd ? 'right' : ''"></div>
+                    <span class="switch_text">{{showPwd ? 'abc' : '...'}}</span>
+                  </div>
+                </section>
+                <section class="login_message">
+                  <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
+                  <img class="get_verification" :src="captchaSrc" alt="captcha" @click="getCaptcha">
+                </section>
+              </section>
+            </div>
+            <button class="login_submit" @click.prevent="login">登录</button>
+          </form>
+          <a href="javascript:;" class="about_us">关于我们</a>
+        </div>
+        <a href="javascript:" class="go_back" @click="$router.back()">
+          <i class="iconfont icon-jiantou2"></i>
+        </a>
       </div>
-      <a href="javascript:" class="go_back" @click="$router.back()">
-        <i class="iconfont icon-jiantou2"></i>
-      </a>
-    </div>
-    <alert-tip v-show="showAlert" :alertText="alertText" @closeTip="closeTip"></alert-tip>
-  </section>
+      <alert-tip v-show="showAlert" :alertText="alertText" @closeTip="closeTip"></alert-tip>
+    </section>
+  </transition>
 </template>
 
 <script>
 import AlertTip from 'components/AlertTip/AlertTip'
 import {BASE_URL, reqPwdLogin, reqSendCode, reqSmsLogin, ERR_OK} from 'api/index.js'
+import {mapMutations} from 'vuex'
 export default {
   data () {
     return {
@@ -129,6 +132,9 @@ export default {
           this.showAlert = true
           return false
         }
+        // this.countTime = 0
+        // clearInterval(this.timer)
+        // this.timer = null
         // ajax
         result = await reqSmsLogin(this.phone, this.code)
       } else { // name登陆
@@ -149,10 +155,17 @@ export default {
         result = await reqPwdLogin(this.name, this.pwd, this.captcha)
       }
       if (result.code === ERR_OK) {
-        const data = result.data
+        const user = result.data
+        // 将user保存到vuex
+        this.setUserInfo(user)
+        // 跳转路由到个人中心
+        this.$router.push('/profile')
       } else {
         this.alertText = result.msg
         this.showAlert = true
+        if (!this.loginWay) { // 账号登录
+          this.timeStamp = new Date().getTime()
+        }
       }
     },
     closeTip () {
@@ -160,17 +173,26 @@ export default {
     },
     getCaptcha () {
       this.timeStamp = new Date().getTime()
-    }
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USERINFO'
+    })
   }
 }
 </script>
 
 <style lang='stylus' scoped>
   @import "~common/stylus/mixins.styl"
+  .v-enter-active,.v-leave-active
+    transition all 0.3s
+  .v-enter,.v-leave-to
+    transform translateX(100%)
   .loginContainer
     width 100%
     height 100%
     background #fff
+    position relative
+    z-index 101
     .loginInner
       padding-top 60px
       width 80%

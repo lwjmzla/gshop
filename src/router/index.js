@@ -6,6 +6,10 @@ import MSite from 'pages/MSite/MSite'
 import Profile from 'pages/Profile/Profile'
 import Search from 'pages/Search/Search'
 import Login from 'pages/Login/Login'
+import Shop from 'pages/Shop/Shop'
+import ShopGoods from 'pages/Shop/ShopGoods/ShopGoods'
+import ShopRatings from 'pages/Shop/ShopRatings/ShopRatings'
+import ShopInfo from 'pages/Shop/ShopInfo/ShopInfo'
 
 Vue.use(Router)
 
@@ -49,8 +53,26 @@ export default new Router({
       component: Login
     },
     {
-      path: '*',
-      redirect: '/'
+      path: '/shop',
+      component: Shop,
+      children: [
+        {
+          path: 'goods',
+          component: ShopGoods
+        },
+        {
+          path: 'ratings',
+          component: ShopRatings
+        },
+        {
+          path: 'info',
+          component: ShopInfo
+        },
+        {
+          path: '',
+          redirect: '/shop/goods'
+        }
+      ]
     }
   ],
   linkExactActiveClass: 'on'

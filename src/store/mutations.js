@@ -9,6 +9,9 @@ const mutations = {
   },
   [types.SET_SHOPS] (state, shops) {
     state.shops = shops
+  },
+  [types.SET_USERINFO] (state, userInfo) {
+    state.userInfo = userInfo
   }
 }
 

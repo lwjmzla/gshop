@@ -8,6 +8,9 @@ import store from './store/index.js'
 import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
 import 'common/reset.css'
+import {Button} from 'mint-ui'
+
+Vue.component(Button.name, Button) // <mt-button></mt-button>
 
 // import $ from 'jquery'
 // import slide from '../static/js/slide'

@@ -2,17 +2,17 @@
   <section class="profile">
     <header-top title="我的"></header-top>
     <section class="profile-number">
-      <router-link to="/login" class="profile-link">
+      <router-link :to="userInfo._id ? '/userinfo' : '/login'" class="profile-link">
         <div class="profile_image">
           <i class="iconfont icon-person"></i>
         </div>
         <div class="user-info">
-          <p class="user-info-top">登录/注册</p>
+          <p class="user-info-top" v-if="!userInfo.phone">{{userInfo.name || '登录/注册'}}</p>
           <p>
             <span class="user-icon">
               <i class="iconfont icon-shouji icon-mobile"></i>
             </span>
-            <span class="icon-mobile-number">暂无绑定手机号</span>
+            <span class="icon-mobile-number" >{{userInfo.phone || '暂无绑定手机号'}}</span>
           </p>
         </div>
         <span class="arrow">
@@ -88,21 +88,48 @@
         </div>
       </a>
     </section>
+    <section class="profile_my_order border-1px">
+      <mt-button type="danger" style="width:100%" v-if="userInfo._id" @click="logout">退出登录</mt-button>
+    </section>
   </section>
 </template>
 
 <script>
 import HeaderTop from 'components/HeaderTop/HeaderTop'
+import {mapGetters, mapMutations} from 'vuex'
+import { MessageBox, Toast } from 'mint-ui'
+import {reqLogout, ERR_OK} from 'api/index.js'
 export default {
   data () {
     return {
 
     }
   },
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
   components: {
     HeaderTop
   },
   methods: {
+    logout () {
+      MessageBox.confirm('确定退出吗?').then(
+        action => {
+          reqLogout().then((res) => {
+            if (res.code === ERR_OK) {
+              this.setUserInfo({})
+              Toast('登出完成')
+            }
+          })
+        },
+        action => {
+          console.log('取消了')
+        }
+      )
+    },
+    ...mapMutations({
+      setUserInfo: 'SET_USERINFO'
+    })
   }
 }
 </script>
@@ -112,6 +139,11 @@ export default {
   .profile //我的
     width 100%
     overflow hidden
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
     .profile-number
       margin-top 45.5px
       .profile-link

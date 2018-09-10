@@ -2,12 +2,15 @@
   <section class="msite">
     <!--首页头部-->
     <header-top :title="title">
-      <span class="header_search" slot="left">
+      <router-link class="header_search" slot="left" to="/search">
         <i class="iconfont icon-sousuo"></i>
-      </span>
-      <span class="header_login" slot="right">
-        <span class="header_login_text">登录|注册</span>
-      </span>
+      </router-link>
+      <router-link class="header_login" slot="right" :to="userInfo._id ? '/userinfo' : '/login'">
+        <span class="header_login_text" v-if="!userInfo._id">登录|注册</span>
+        <span class="header_login_text" v-else>
+          <i class="iconfont icon-person"></i>
+        </span>
+      </router-link>
     </header-top>
     <div class="betterScrollWrap">
       <div class="betterScrollContent">
@@ -93,7 +96,7 @@ export default {
     })
   },
   computed: {
-    ...mapGetters(['latitude', 'longitude'])
+    ...mapGetters(['latitude', 'longitude', 'userInfo'])
   },
   methods: {
     _calculateCategorys (data) {
@@ -127,6 +130,9 @@ export default {
 
 <style lang="stylus" scoped>
   @import "~common/stylus/mixins.styl"
+  .icon-sousuo
+    font-size 25px
+    color #fff
   .betterScrollWrap
     overflow hidden
     position absolute

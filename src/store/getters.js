@@ -9,3 +9,5 @@ export const address = state => state.address
 export const categorys = state => state.categorys
 
 export const shops = state => state.shops
+
+export const userInfo = state => state.userInfo

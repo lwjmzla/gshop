@@ -9,10 +9,24 @@
 
 <script>
 import FooterGuide from 'components/FooterGuide/FooterGuide'
+import {getUserInfo, ERR_OK} from 'api/index.js'
+import {mapMutations} from 'vuex'
 export default {
   name: 'App',
   components: {
     FooterGuide
+  },
+  async created () {
+    const result = await getUserInfo()
+    if (result.code === ERR_OK) {
+      const userInfo = result.data
+      this.setUserInfo(userInfo)
+    }
+  },
+  methods: {
+    ...mapMutations({
+      setUserInfo: 'SET_USERINFO'
+    })
   }
 }
 </script>
