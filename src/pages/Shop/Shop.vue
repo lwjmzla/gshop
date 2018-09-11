@@ -1,15 +1,15 @@
 <template>
-  <div>
-    <shop-header></shop-header>
+  <div class="shopWrap">
+    <shop-header :info="info"></shop-header>
     <div class="tab">
       <div class="tab-item">
-        <router-link to="/shop/goods">点餐</router-link>
+        <router-link to="/shop/goods" replace>点餐</router-link>
       </div>
       <div class="tab-item">
-        <router-link to="/shop/ratings">评价</router-link>
+        <router-link to="/shop/ratings" replace>评价</router-link>
       </div>
       <div class="tab-item">
-        <router-link to="/shop/info">商家</router-link>
+        <router-link to="/shop/info" replace>商家</router-link>
       </div>
     </div>
     <router-view></router-view>
@@ -18,20 +18,34 @@
 
 <script>
 import ShopHeader from 'components/ShopHeader/ShopHeader'
+import {getShopInfo, ERR_OK} from 'api/index.js'
 export default {
   data () {
     return {
-
+      info: {}
     }
   },
   components: {
     ShopHeader
+  },
+  created () {
+    getShopInfo().then((res) => {
+      if (res.code === ERR_OK) {
+        this.info = res.data
+      }
+    })
   }
 }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
   @import "../../common/stylus/mixins.styl"
+  .shopWrap
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
   .tab
     height 40px
     line-height 40px

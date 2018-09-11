@@ -9,6 +9,7 @@ import fastclick from 'fastclick'
 import VueLazyload from 'vue-lazyload'
 import 'common/reset.css'
 import {Button} from 'mint-ui'
+import 'mock/mockServer.js' // 到时还要弄个DEV的时候才加载，生产模式 就不要。就真实数据  接口参数 也要看具体情况的处理
 
 Vue.component(Button.name, Button) // <mt-button></mt-button>
 

@@ -1,5 +1,6 @@
 <template>
   <section class="msite">
+    <router-view></router-view>
     <!--首页头部-->
     <header-top :title="title">
       <router-link class="header_search" slot="left" to="/search">

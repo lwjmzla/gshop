@@ -30,14 +30,14 @@ export const reqLogout = () => ajax(BASE_URL + '/logout')
 /**
  * 获取商家信息
  */
-// export const getShopInfo = () => ajax('/info')
+export const getShopInfo = () => ajax('/info')
 
 /**
  * 获取商家评价数组
  */
-// export const getShopRatings = () => ajax('/ratings')
+export const getShopRatings = () => ajax('/ratings')
 
 /**
  * 获取商家商品数组
  */
-// export const getShopGoods = () => ajax('/goods')
+export const getShopGoods = () => ajax('/goods')

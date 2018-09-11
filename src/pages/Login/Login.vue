@@ -1,4 +1,5 @@
 <template>
+  <!-- 同级路由实现这效果不美观，有0.3s背景空白，父子路由用才好看 -->
   <transition>
     <section class="loginContainer">
       <div class="loginInner">

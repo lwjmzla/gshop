@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import HelloWorld from '@/components/HelloWorld'
 import MSite from 'pages/MSite/MSite'
+import linshi from 'pages/MSite/linshi/linshi'
 // import Order from 'pages/Order/Order'
 import Profile from 'pages/Profile/Profile'
 import Search from 'pages/Search/Search'
@@ -24,7 +25,13 @@ export default new Router({
       component: MSite,
       meta: {
         showFooter: true
-      }
+      },
+      children: [
+        {
+          path: 'linshi',
+          component: linshi
+        }
+      ]
     },
     {
       path: '/order',

@@ -5,6 +5,7 @@ good
 </template>
 
 <script>
+import {getShopGoods} from 'api/index.js'
 export default {
   data () {
     return {
@@ -13,6 +14,11 @@ export default {
   },
   components: {
 
+  },
+  created () {
+    getShopGoods().then((res) => {
+      // console.log(res)
+    })
   }
 }
 </script>
