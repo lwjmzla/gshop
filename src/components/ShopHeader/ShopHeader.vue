@@ -121,7 +121,7 @@ export default {
   },
   watch: {
     info (newVal) {
-      console.log(newVal)
+      // console.log(newVal)
     }
   },
   methods: {
