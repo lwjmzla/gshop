@@ -31,6 +31,9 @@ const mutations = {
       state.cartFoods.splice(index, 1)
     }
     food.count--
+  },
+  [types.SET_INFO] (state, info) {
+    state.info = info
   }
 }
 

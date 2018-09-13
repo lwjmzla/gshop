@@ -19,6 +19,7 @@
 <script>
 import ShopHeader from 'components/ShopHeader/ShopHeader'
 import {getShopInfo, ERR_OK} from 'api/index.js'
+import {mapMutations} from 'vuex'
 export default {
   data () {
     return {
@@ -32,8 +33,12 @@ export default {
     getShopInfo().then((res) => {
       if (res.code === ERR_OK) {
         this.info = res.data
+        this.SET_INFO(this.info)
       }
     })
+  },
+  methods: {
+    ...mapMutations(['SET_INFO'])
   }
 }
 </script>

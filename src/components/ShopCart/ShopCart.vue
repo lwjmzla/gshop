@@ -1,10 +1,52 @@
 <template>
   <div>
-
+    <div class="shopcart">
+      <div class="content">
+        <div class="content-left">
+          <div class="logo-wrapper">
+            <div class="logo" :class="{highlight: cartFoods.length}">
+              <i class="iconfont icon-shopping_cart" :class="{highlight: cartFoods.length}"></i>
+            </div>
+            <div class="num">{{totalCount}}</div>
+          </div>
+          <div class="price">￥{{totalPrice}}</div>
+          <div class="desc">另需配送费￥4 元</div>
+        </div>
+        <div class="content-right">
+          <div class="pay not-enough">
+            <!-- 还差￥10 元起送 -->
+            {{payText}}
+          </div>
+        </div>
+      </div>
+      <div class="shopcart-list" style="display: none;">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty">清空</span>
+        </div>
+        <div class="list-content">
+          <ul>
+            <li class="food">
+              <span class="name">红枣山药糙米粥</span>
+              <div class="price"><span>￥10</span></div>
+              <div class="cartcontrol-wrapper">
+                <div class="cartcontrol">
+                  <div class="iconfont icon-remove_circle_outline"></div>
+                  <div class="cart-count">1</div>
+                  <div class="iconfont icon-add_circle"></div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="list-mask" style="display: none;"></div>
   </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
   data () {
     return {
@@ -13,6 +55,35 @@ export default {
   },
   components: {
 
+  },
+  computed: {
+    ...mapGetters(['cartFoods', 'info']),
+    totalPrice () {
+      if (!this.cartFoods.length) {
+        return 0
+      } else {
+        let price = 0
+        this.cartFoods.forEach((food) => {
+          price += food.price * food.count
+        })
+        return price
+      }
+    },
+    totalCount () {
+      if (!this.cartFoods.length) {
+        return 0
+      } else {
+        let count = 0
+        this.cartFoods.forEach((food) => {
+          count += food.count
+        })
+        return count
+      }
+    },
+    payText () {
+      // 明天继续这里。。。
+      return '还差￥10 元起送'
+    }
   }
 }
 </script>

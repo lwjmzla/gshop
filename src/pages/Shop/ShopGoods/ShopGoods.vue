@@ -39,6 +39,7 @@
           </li>
         </ul>
       </div>
+      <shop-cart></shop-cart>
     </div>
     <food :food="food" @closeFoodInfos="food = {}"></food>
     <!-- 取消food组件了，因为food里面用到cart-control，数据不是用vuex传递 这样有点麻烦，下次用vuex传递数据 就没问题 cartFoods-->
@@ -49,6 +50,7 @@
 import {getShopGoods, ERR_OK} from 'api/index.js'
 import CartControl from 'components/CartControl/CartControl'
 import Food from 'components/Food/Food'
+import ShopCart from 'components/ShopCart/ShopCart'
 import BScroll from 'better-scroll'
 export default {
   data () {
@@ -63,7 +65,8 @@ export default {
   },
   components: {
     CartControl,
-    Food
+    Food,
+    ShopCart
   },
   created () {
     getShopGoods().then((res) => {
