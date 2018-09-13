@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
   props: {
     food: {
@@ -22,11 +23,12 @@ export default {
   },
   methods: {
     addCount () {
-      this.$emit('addCount', this.food)
+      this.ADD_COUNT(this.food)
     },
     reduceCount () {
-      this.$emit('reduceCount', this.food)
-    }
+      this.REDUCE_COUNT(this.food)
+    },
+    ...mapMutations(['ADD_COUNT', 'REDUCE_COUNT'])
   },
   watch: {
   }
