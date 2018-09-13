@@ -42,32 +42,34 @@
     </div>
     <!-- <food :food="food" @closeFoodInfos="food = {}"></food> -->
     <!-- 取消food组件了，因为food里面用到cart-control，数据不是用vuex传递 这样有点麻烦，下次用vuex传递数据 就没问题 -->
-    <div class="food" v-show="food.name">
-      <div class="food-content">
-        <div class="image-header">
-          <img :src="food.image">
-          <p class="foodpanel-desc">{{food.info}}</p>
-          <div class="back" @click="closeFoodInfos">
-            <i class="iconfont icon-arrow_left"></i>
+    <transition name="fade">
+      <div class="food" v-show="food.name">
+        <div class="food-content">
+          <div class="image-header">
+            <img :src="food.image">
+            <p class="foodpanel-desc">{{food.info}}</p>
+            <div class="back" @click="closeFoodInfos">
+              <i class="iconfont icon-arrow_left"></i>
+            </div>
+          </div>
+          <div class="content">
+            <h1 class="title">{{food.name}}</h1>
+            <div class="detail">
+              <span class="sell-count">月售 {{food.sellCount}} 份</span>
+              <span class="rating">好评率 {{food.rating}}%</span>
+            </div>
+            <div class="price">
+              <span class="now">￥{{food.price}}</span>
+              <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+            </div>
+            <div class="cartcontrol-wrapper">
+              <cart-control :food="food" :transition="false" @addCount="addCount" @reduceCount="reduceCount"></cart-control>
+            </div>
           </div>
         </div>
-        <div class="content">
-          <h1 class="title">{{food.name}}</h1>
-          <div class="detail">
-            <span class="sell-count">月售 {{food.sellCount}} 份</span>
-            <span class="rating">好评率 {{food.rating}}%</span>
-          </div>
-          <div class="price">
-            <span class="now">￥{{food.price}}</span>
-            <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-          </div>
-          <div class="cartcontrol-wrapper">
-            <cart-control :food="food" :transition="false" @addCount="addCount" @reduceCount="reduceCount"></cart-control>
-          </div>
-        </div>
+        <div class="food-cover" @click="closeFoodInfos"></div>
       </div>
-      <div class="food-cover" @click="closeFoodInfos"></div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -160,7 +162,6 @@ export default {
     },
     showFoodInfos (food) {
       this.food = food
-      console.log(food)
     },
     closeFoodInfos () {
       this.food = {}
@@ -273,9 +274,9 @@ export default {
     bottom: 48px
     z-index: 101
     width: 100%
-    &.fade-enter-active, &.fade-leave-active
+    &.fade-enter-active
       transition opacity .5s
-    &.fade-enter, &.fade-leave-to
+    &.fade-enter
       opacity 0
     .food-content
       position absolute
