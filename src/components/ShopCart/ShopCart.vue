@@ -1,60 +1,66 @@
 <template>
   <div>
     <div class="shopcart">
-      <div class="content">
+      <div class="content" @click="toggleSelectedMenu">
         <div class="content-left">
           <div class="logo-wrapper">
             <div class="logo" :class="{highlight: cartFoods.length}">
               <i class="iconfont icon-shopping_cart" :class="{highlight: cartFoods.length}"></i>
             </div>
-            <div class="num">{{totalCount}}</div>
+            <div class="num" v-show="totalCount">{{totalCount}}</div>
           </div>
           <div class="price">￥{{totalPrice}}</div>
           <div class="desc">另需配送费￥4 元</div>
         </div>
-        <div class="content-right">
-          <div class="pay not-enough">
+        <div class="content-right" @click.stop>
+          <div class="pay" :class="totalPrice >= info.minPrice ? 'enough' : 'not-enough'">
             <!-- 还差￥10 元起送 -->
             {{payText}}
           </div>
         </div>
       </div>
-      <div class="shopcart-list" style="display: none;">
-        <div class="list-header">
-          <h1 class="title">购物车</h1>
-          <span class="empty">清空</span>
-        </div>
-        <div class="list-content">
-          <ul>
-            <li class="food">
-              <span class="name">红枣山药糙米粥</span>
-              <div class="price"><span>￥10</span></div>
-              <div class="cartcontrol-wrapper">
-                <div class="cartcontrol">
-                  <div class="iconfont icon-remove_circle_outline"></div>
-                  <div class="cart-count">1</div>
-                  <div class="iconfont icon-add_circle"></div>
+      <transition name="move">
+        <div class="shopcart-list" v-show="isShowSelectedMenu && cartFoods.length">
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty" @click="clearMenu">清空</span>
+          </div>
+          <div class="list-content" ref="selectedMenuListWrap">
+            <ul>
+              <li class="food" v-for="(food,index) in cartFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <div class="price"><span>￥{{food.price}}</span></div>
+                <div class="cartcontrol-wrapper">
+                  <cart-control :food="food" :transition="false" ></cart-control>
                 </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
-    <div class="list-mask" style="display: none;"></div>
+    <div class="list-mask" v-show="isShowSelectedMenu && cartFoods.length" @click="isShowSelectedMenu = false"></div>
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
+import CartControl from 'components/CartControl/CartControl'
+import {MessageBox} from 'mint-ui'
+import BScroll from 'better-scroll'
 export default {
   data () {
     return {
-
+      isShowSelectedMenu: false
     }
   },
   components: {
-
+    CartControl
+  },
+  mounted () {
+    this.scroll = new BScroll(this.$refs.selectedMenuListWrap, {
+      click: true
+    })
   },
   computed: {
     ...mapGetters(['cartFoods', 'info']),
@@ -81,8 +87,47 @@ export default {
       }
     },
     payText () {
-      // 明天继续这里。。。
-      return '还差￥10 元起送'
+      if (this.totalPrice >= this.info.minPrice) {
+        return '结算'
+      } else if (this.totalPrice === 0) {
+        return '￥20元起送'
+      } else {
+        const money = this.info.minPrice - this.totalPrice
+        return '还差￥' + money + ' 元起送'
+      }
+    }
+  },
+  methods: {
+    toggleSelectedMenu () {
+      if (this.totalCount) {
+        this.isShowSelectedMenu = !this.isShowSelectedMenu
+      }
+    },
+    clearMenu () {
+      MessageBox.confirm('确定清空购物车吗?').then(
+        action => {
+          this.isShowSelectedMenu = false
+          this.CLEAR_CARTFOODS()
+        },
+        action => {
+          console.log('取消了')
+        }
+      )
+    },
+    ...mapMutations(['CLEAR_CARTFOODS'])
+  },
+  watch: {
+    cartFoods (newVal) {
+      // 这里的数据有点奇葩 watch vuex的数据 不过现在无敌了。
+      this.$nextTick(() => {
+        this.scroll.refresh()
+        setTimeout(() => {
+          this.scroll.refresh()
+        }, 1000)
+        setTimeout(() => {
+          this.scroll.refresh()
+        }, 1500)
+      })
     }
   }
 }

@@ -34,6 +34,12 @@ const mutations = {
   },
   [types.SET_INFO] (state, info) {
     state.info = info
+  },
+  [types.CLEAR_CARTFOODS] (state) {
+    state.cartFoods.forEach((food) => {
+      food.count = 0
+    })
+    state.cartFoods = []
   }
 }
 
