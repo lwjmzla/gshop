@@ -12,7 +12,9 @@
         <router-link to="/shop/info" replace>商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -30,6 +32,7 @@ export default {
     ShopHeader
   },
   created () {
+    //  可以在这判断 上一个路由点击的时候保存信息，在这里获取那个信息 然后ajax对应的 shop信息就 能对应 不一样的shop
     getShopInfo().then((res) => {
       if (res.code === ERR_OK) {
         this.info = res.data

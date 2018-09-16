@@ -1,16 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import HelloWorld from '@/components/HelloWorld'
-import MSite from 'pages/MSite/MSite'
-import linshi from 'pages/MSite/linshi/linshi'
-// import Order from 'pages/Order/Order'
-import Profile from 'pages/Profile/Profile'
-import Search from 'pages/Search/Search'
 import Login from 'pages/Login/Login'
 import Shop from 'pages/Shop/Shop'
 import ShopGoods from 'pages/Shop/ShopGoods/ShopGoods'
 import ShopRatings from 'pages/Shop/ShopRatings/ShopRatings'
 import ShopInfo from 'pages/Shop/ShopInfo/ShopInfo'
+// import HelloWorld from '@/components/HelloWorld'
+
+// import MSite from 'pages/MSite/MSite'
+import linshi from 'pages/MSite/linshi/linshi'
+// import Order from 'pages/Order/Order'
+// import Profile from 'pages/Profile/Profile'
+// import Search from 'pages/Search/Search'
+const MSite = () => import('pages/MSite/MSite')
+const Order = () => import('pages/Order/Order')
+const Search = () => import('pages/Search/Search')
+const Profile = () => import('pages/Profile/Profile')
 
 Vue.use(Router)
 
@@ -35,7 +40,7 @@ export default new Router({
     },
     {
       path: '/order',
-      component: () => import('pages/Order/Order'),
+      component: Order,
       meta: {
         showFooter: true
       }

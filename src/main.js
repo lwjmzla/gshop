@@ -20,7 +20,7 @@ Vue.component(Button.name, Button) // <mt-button></mt-button>
 Vue.use(VueLazyload, {
   // preLoad: 1.3,
   // error: 'dist/error.png',
-  // loading: require('common/image/default.png')
+  loading: require('common/imgs/loading-big.gif')
   // attempt: 1
 })
 

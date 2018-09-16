@@ -1,9 +1,10 @@
 <template>
   <transition name="fade">
-    <div class="food" v-show="food.name">
+    <div class="food" v-if="food.name">
+      <!-- 想用 v-lazy的话，上面要用v-if而不是 v-show -->
       <div class="food-content">
         <div class="image-header">
-          <img :src="food.image">
+          <img v-lazy="food.image">
           <p class="foodpanel-desc">{{food.info}}</p>
           <div class="back" @click="closeFoodInfos">
             <i class="iconfont icon-arrow_left"></i>
